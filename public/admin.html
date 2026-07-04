@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LBMessenger - Admin</title>
+<link rel="icon" type="image/png" href="https://www.0x08.org/images/msn_messenger.png" />
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body style="background:#3a5fc4;">
+<div class="win" style="margin:20px auto; max-width:1040px;">
+  <div class="titlebar">
+    <div class="logo">LBMessenger - Panel de Administración</div>
+    <a href="/chat.html" class="topbar-link">← Volver al chat</a>
+  </div>
+
+  <div class="admin-wrapper">
+    <div id="accessDenied" class="hidden">
+      <p>No tienes permisos para ver esta página.</p>
+    </div>
+
+    <div id="adminContent">
+      <div class="sidebar-tabs" style="margin-bottom:14px; border:1px solid #b9c4e0; border-radius:4px; overflow:hidden;">
+        <button class="active" data-tab="reports">Reportes</button>
+        <button data-tab="users">Usuarios</button>
+        <button data-tab="rooms" id="roomsTabBtn">Salas</button>
+      </div>
+
+      <!-- REPORTES -->
+      <div id="reportsTab">
+        <div class="admin-table-scroll">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Mensaje reportado</th>
+              <th>Autor</th>
+              <th>Reportado por</th>
+              <th>Motivo</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="reportsBody"></tbody>
+        </table>
+        </div>
+      </div>
+
+      <!-- USUARIOS -->
+      <div id="usersTab" class="hidden">
+        <div class="admin-table-scroll">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Apodo</th>
+              <th>Correo</th>
+              <th>Rol</th>
+              <th>Estado cuenta</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="usersBody"></tbody>
+        </table>
+        </div>
+      </div>
+
+      <!-- SALAS -->
+      <div id="roomsTab" class="hidden">
+        <div id="createRoomBox" class="hidden" style="background:#fff;border:1px solid #dbe3f4;padding:12px;border-radius:6px;margin-bottom:14px;">
+          <label>Nombre</label>
+          <input type="text" id="newRoomName" />
+          <label>Slug (identificador único)</label>
+          <input type="text" id="newRoomSlug" placeholder="ej: anime" />
+          <label>Icono (emoji)</label>
+          <input type="text" id="newRoomIcon" placeholder="🎬" />
+          <label>Descripción</label>
+          <input type="text" id="newRoomDesc" />
+          <button class="btn" style="margin-top:10px;" id="createRoomBtn">Crear sala</button>
+        </div>
+        <div class="admin-table-scroll">
+        <table class="admin-table">
+          <thead>
+            <tr><th>Icono</th><th>Nombre</th><th>Descripción</th><th>Tipo</th><th>Acciones</th></tr>
+          </thead>
+          <tbody id="roomsBody"></tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/config.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,1106 @@
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: Tahoma, Verdana, Arial, sans-serif;
+  font-size: 13px;
+  background: #5a7edc url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4"><rect width="4" height="4" fill="%235a7edc"/></svg>');
+  background: linear-gradient(135deg, #6f93e8, #3a5fc4);
+  min-height: 100vh;
+  color: #1a1a1a;
+}
+
+/* ---------- Ventana estilo XP/7 ---------- */
+.win {
+  background: #ece9f1;
+  border: 1px solid #2657c4;
+  border-radius: 6px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  overflow: hidden;
+}
+
+.titlebar {
+  background: linear-gradient(to bottom, #5d96f0 0%, #2f63d6 50%, #1d4cc0 100%);
+  color: #fff;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: bold;
+  letter-spacing: 0.3px;
+}
+
+.titlebar .logo { display: flex; align-items: center; gap: 6px; }
+.titlebar-actions { display: flex; align-items: center; gap: 4px; }
+.titlebar .dots span {
+  display: inline-block;
+  width: 12px; height: 12px;
+  margin-left: 4px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.25);
+}
+
+/* ---------- Auth screens ---------- */
+.auth-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.auth-card {
+  width: 380px;
+  max-width: 100%;
+}
+
+.auth-body { padding: 24px 26px; background: #f3f5fb; }
+
+.auth-body h2 { margin: 0 0 4px; color: #1d4cc0; }
+.auth-body p.subtitle { margin: 0 0 18px; color: #555; font-size: 12px; }
+
+label { display:block; margin: 10px 0 4px; font-weight: bold; color: #333; }
+
+input[type="text"], input[type="email"], input[type="password"], textarea, select {
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid #9aa9c7;
+  border-radius: 3px;
+  background: #fff;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+/* Evita el zoom automático de iOS en inputs dentro de formularios */
+@media (max-width: 480px) {
+  input[type="text"], input[type="email"], input[type="password"], textarea, select {
+    font-size: 16px;
+  }
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: #2f63d6;
+  box-shadow: 0 0 0 2px rgba(47,99,214,0.2);
+}
+
+.btn {
+  display: inline-block;
+  padding: 8px 18px;
+  border-radius: 4px;
+  border: 1px solid #1d4cc0;
+  background: linear-gradient(to bottom, #6fa0ff, #2f63d6);
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 13px;
+  min-height: 36px;
+}
+.btn:hover { background: linear-gradient(to bottom, #82adff, #3d6fe0); }
+.btn:active { transform: translateY(1px); }
+.btn.secondary {
+  background: linear-gradient(to bottom, #f5f5f5, #dcdcdc);
+  color: #333;
+  border-color: #aaa;
+}
+.btn.danger {
+  background: linear-gradient(to bottom, #ff8a8a, #d23c3c);
+  border-color: #a82c2c;
+}
+.btn.block { width: 100%; margin-top: 14px; }
+
+.form-actions { margin-top: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.link-btn { background:none;border:none;color:#1d4cc0;cursor:pointer;font-size:12px;text-decoration:underline;padding:6px 0; }
+
+.error-msg { color: #c62828; font-size: 12px; margin-top: 8px; min-height: 14px; }
+.success-msg { color: #2e7d32; font-size: 12px; margin-top: 8px; min-height: 14px; }
+.notice-msg { color: #555; font-size: 12px; margin-top: 8px; line-height: 1.4; }
+
+.btn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+.hidden { display: none !important; }
+
+/* ---------- App layout (3 columnas estilo MSN) ---------- */
+.app-shell {
+  height: 100vh;
+  height: 100dvh; /* soporta barras de navegador móviles que cambian de tamaño */
+  display: flex;
+  flex-direction: column;
+}
+
+.app-body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  position: relative; /* necesario para los overlays móviles del sidebar/perfil */
+}
+
+/* Columna izquierda: amigos / chats / salas */
+.sidebar {
+  width: 250px;
+  background: #e7ecf7;
+  border-right: 1px solid #b9c4e0;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.sidebar-tabs {
+  display: flex;
+  border-bottom: 1px solid #b9c4e0;
+}
+.sidebar-tabs button {
+  flex: 1;
+  padding: 8px 4px;
+  border: none;
+  background: #d6e0f5;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: bold;
+  color: #2a3a66;
+  border-right: 1px solid #b9c4e0;
+}
+.sidebar-tabs button:last-child { border-right: none; }
+.sidebar-tabs button.active { background: #f3f5fb; border-bottom: 2px solid #1d4cc0; }
+
+.search-box { padding: 8px; border-bottom: 1px solid #d4dcf0; }
+.search-box input { font-size: 12px; }
+
+.list-panel { flex: 1; overflow-y: auto; }
+
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #dbe3f4;
+}
+.list-item:hover { background: #d6e3fb; }
+.list-item.active { background: #bcd2f7; }
+
+.avatar-circle {
+  width: 34px; height: 34px;
+  border-radius: 6px;
+  background: #c3d2f0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  border: 1px solid #9aa9c7;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+/* Foto de perfil real (JPEG/GIF) subida por el usuario, en vez del emoji */
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.status-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  position: absolute;
+  bottom: -2px; right: -2px;
+  border: 2px solid #e7ecf7;
+}
+.status-dot.online { background: #34c759; }
+.status-dot.away { background: #ffb020; }
+.status-dot.offline { background: #999; }
+
+.list-item-text { min-width: 0; flex:1; }
+.list-item-name { font-weight: bold; font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.list-item-sub { font-size: 11px; color: #667; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.section-title {
+  font-size: 11px;
+  font-weight: bold;
+  color: #5570b3;
+  padding: 6px 10px 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.badge {
+  background: #d23c3c;
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 10px;
+  padding: 1px 6px;
+  margin-left: auto;
+}
+
+/* Columna central: chat activo */
+.chat-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #fdfdfd url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="40" height="40" fill="%23fdfdfd"/></svg>');
+  min-width: 0;
+}
+
+.chat-header {
+  padding: 10px 14px;
+  background: #eef2fb;
+  border-bottom: 1px solid #c9d4ef;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+/* Contenedor del nombre/estado: min-width:0 es necesario para que un
+   apodo largo pueda truncarse con ellipsis en vez de desbordar el header
+   y empujar los botones de la derecha fuera de la pantalla. */
+.chat-header-info { min-width: 0; flex: 1 1 auto; overflow: hidden; }
+.chat-header .name { font-weight: bold; color: #1d4cc0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chat-header .sub { font-size: 11px; color: #777; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chat-header-actions { margin-left: auto; display: flex; gap: 6px; flex-shrink: 0; }
+
+/* Botones que solo existen en móvil/tablet para abrir sidebar y perfil */
+.mobile-toggle-btn {
+  display: none;
+  border: 1px solid #9aa9c7;
+  background: #fff;
+  border-radius: 4px;
+  padding: 6px 9px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.messages-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.message-row { margin-bottom: 12px; max-width: 75%; }
+.message-row.own { margin-left: auto; }
+
+.message-meta {
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 2px;
+}
+.message-meta .author { font-weight: bold; }
+
+.message-bubble {
+  background: #eef2fb;
+  border: 1px solid #c9d4ef;
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 13px;
+  line-height: 1.4;
+  word-wrap: break-word;
+  position: relative;
+}
+.message-row.own .message-bubble { background: #d6e8d4; border-color: #b3d4af; }
+
+.message-actions {
+  font-size: 10px;
+  color: #aaa;
+  margin-top: 2px;
+  cursor: pointer;
+  text-align: right;
+  padding: 4px 0; /* área táctil más cómoda */
+}
+.message-actions:hover { color: #c62828; text-decoration: underline; }
+
+.system-msg { text-align: center; color: #999; font-size: 11px; margin: 10px 0; }
+
+.empty-chat-placeholder {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: #99a;
+  gap: 8px;
+  text-align: center;
+  padding: 20px;
+}
+.empty-chat-placeholder .big-icon { font-size: 48px; }
+
+.typing-indicator { font-size: 11px; color: #888; padding: 0 14px 6px; min-height: 16px; }
+
+.composer {
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  border-top: 1px solid #c9d4ef;
+  background: #eef2fb;
+  position: relative;
+}
+.composer textarea {
+  flex: 1;
+  resize: none;
+  height: 40px;
+}
+
+/* Botones extra del composer: emoticonos y zumbido */
+.composer-extra-btn {
+  border: 1px solid #9aa9c7;
+  background: #fff;
+  border-radius: 4px;
+  font-size: 17px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.composer-extra-btn:hover { background: #f0f4ff; }
+.composer-extra-btn:disabled { opacity: 0.5; cursor: default; }
+
+/* Panel desplegable de emoticonos */
+.emoticon-picker {
+  position: absolute;
+  bottom: 56px;
+  left: 10px;
+  background: #fff;
+  border: 1px solid #9aa9c7;
+  border-radius: 6px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+  padding: 8px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+  z-index: 30;
+  width: 220px;
+}
+.emoticon-picker button {
+  border: none;
+  background: none;
+  font-size: 19px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  line-height: 1;
+}
+.emoticon-picker button:hover { background: #eef2fb; }
+
+/* Animación de "zumbido" (nudge) al recibirlo, estilo MSN */
+@keyframes lbm-nudge-shake {
+  0%, 100% { transform: translateX(0); }
+  10% { transform: translateX(-8px) rotate(-1deg); }
+  20% { transform: translateX(8px) rotate(1deg); }
+  30% { transform: translateX(-8px) rotate(-1deg); }
+  40% { transform: translateX(8px) rotate(1deg); }
+  50% { transform: translateX(-6px); }
+  60% { transform: translateX(6px); }
+  70% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+  90% { transform: translateX(-2px); }
+}
+.nudge-shake {
+  animation: lbm-nudge-shake 0.6s ease-in-out;
+}
+
+/* Columna derecha: perfil */
+.profile-panel {
+  width: 220px;
+  background: #e7ecf7;
+  border-left: 1px solid #b9c4e0;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.profile-avatar {
+  width: 80px; height: 80px;
+  border-radius: 10px;
+  background: #fff;
+  border: 2px solid #9aa9c7;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 40px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  position: relative;
+}
+.profile-avatar .avatar-img { width: 100%; height: 100%; object-fit: cover; }
+
+.photo-upload-actions {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+  margin-bottom: 12px;
+}
+.photo-upload-actions .btn {
+  flex: 1;
+  font-size: 11px;
+  padding: 6px 4px;
+  text-align: center;
+}
+.photo-upload-hint {
+  font-size: 10px;
+  color: #778;
+  text-align: center;
+  margin-top: -6px;
+  margin-bottom: 12px;
+}
+
+.status-message-input {
+  width: 100%;
+  font-size: 11px;
+  font-style: italic;
+  color: #445;
+  text-align: center;
+  border: none;
+  background: transparent;
+  border-bottom: 1px dashed #aebde0;
+  padding: 3px 2px;
+  margin-bottom: 12px;
+}
+.status-message-input:focus {
+  outline: none;
+  border-bottom: 1px solid #2f63d6;
+  background: #fff;
+}
+
+.profile-nickname { font-weight: bold; font-size: 15px; margin-bottom: 2px; text-align:center; }
+.profile-email { font-size: 11px; color: #777; margin-bottom: 14px; text-align:center; word-break: break-all; }
+
+.profile-section { width: 100%; margin-bottom: 14px; }
+.profile-section label { font-size: 11px; }
+
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-top: 4px;
+}
+.avatar-option {
+  width: 100%; aspect-ratio: 1;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+}
+.avatar-option.selected { border-color: #1d4cc0; }
+
+.status-toggle { display: flex; gap: 6px; margin-top: 4px; }
+.status-toggle button {
+  flex: 1;
+  font-size: 11px;
+  padding: 5px;
+  border: 1px solid #9aa9c7;
+  background: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.status-toggle button.active { background: #1d4cc0; color: #fff; }
+
+.logout-btn { margin-top: auto; width: 100%; }
+
+/* El panel de perfil ahora tiene bastante más contenido (banner, fondo,
+   bio, links, videos), así que se le permite scrollear por su cuenta sin
+   afectar el resto del layout de 3 columnas. */
+.profile-panel { overflow-y: auto; min-height: 0; }
+
+/* ---------- Banner del perfil (dentro del panel de edición) ---------- */
+.profile-banner-preview {
+  width: 100%;
+  height: 64px;
+  border-radius: 8px;
+  border: 1px solid #9aa9c7;
+  background: linear-gradient(to bottom, #5d96f0 0%, #2f63d6 50%, #1d4cc0 100%);
+  overflow: hidden;
+  margin-bottom: 8px;
+  position: relative;
+}
+.profile-banner-preview .banner-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.profile-banner-preview .banner-empty-hint {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.85);
+  font-size: 10px;
+  text-align: center;
+  padding: 4px;
+}
+
+/* ---------- Bloque genérico "sección con botones de subir/quitar imagen" ---------- */
+.image-upload-row { display: flex; gap: 6px; margin-top: 4px; }
+.image-upload-row .btn { flex: 1; font-size: 11px; padding: 6px 4px; text-align: center; }
+.image-upload-hint { font-size: 10px; color: #778; margin-top: 4px; }
+
+/* ---------- Links personalizados (panel de edición) ---------- */
+.profile-links-list { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+.profile-link-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1px solid #d4dcf0;
+  border-radius: 4px;
+  padding: 5px 7px;
+  font-size: 11px;
+}
+.profile-link-row .link-label { font-weight: bold; flex-shrink: 0; }
+.profile-link-row .link-url {
+  color: #667; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;
+}
+.profile-link-row .remove-btn {
+  border: none; background: none; color: #c62828; cursor: pointer; font-size: 13px; flex-shrink: 0; padding: 2px 4px;
+}
+.mini-add-form { display: flex; flex-direction: column; gap: 5px; margin-top: 8px; }
+.mini-add-form input { font-size: 11px; padding: 6px 7px; }
+.mini-add-form .btn { font-size: 11px; padding: 6px; margin-top: 0; }
+.mini-form-error { color: #c62828; font-size: 10.5px; min-height: 12px; }
+
+/* ---------- Videos de YouTube (panel de edición) ---------- */
+.profile-videos-list { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+.profile-video-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid #d4dcf0;
+  border-radius: 4px;
+  padding: 5px;
+}
+.profile-video-row .video-thumb { width: 56px; height: 32px; object-fit: cover; border-radius: 3px; flex-shrink: 0; }
+.profile-video-row .video-url { flex: 1; font-size: 10.5px; color: #667; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.profile-video-row .remove-btn {
+  border: none; background: none; color: #c62828; cursor: pointer; font-size: 13px; flex-shrink: 0; padding: 2px 4px;
+}
+
+.bio-textarea { width: 100%; font-size: 11.5px; min-height: 60px; resize: vertical; margin-top: 4px; }
+
+/* ---------- Modal de personalización del perfil (tema, widgets, orden) ---------- */
+.theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 14px; }
+.theme-grid .profile-section { padding: 6px 0; border: none; }
+.theme-grid input[type="color"] { width: 100%; height: 28px; padding: 2px; }
+.theme-grid select, .theme-grid input[type="range"] { width: 100%; }
+#widgetAddForm textarea { font-size: 11px; padding: 6px 7px; resize: vertical; }
+
+.layout-order-list { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+.layout-order-row {
+  display: flex; align-items: center; gap: 8px;
+  background: #fff; border: 1px solid #d4dcf0; border-radius: 4px; padding: 5px 7px; font-size: 11px;
+}
+.layout-order-row .order-label { flex: 1; font-weight: bold; }
+.layout-order-row .order-btn {
+  border: 1px solid #c3cee4; background: #eef2fb; cursor: pointer; font-size: 11px; padding: 2px 7px; border-radius: 3px;
+}
+.layout-order-row .order-btn:disabled { opacity: 0.35; cursor: default; }
+
+.widget-row { align-items: flex-start !important; }
+.widget-row .widget-info { flex: 1; overflow: hidden; }
+.widget-row .widget-info .link-label { display: block; }
+.widget-row .widget-info .link-url { display: block; white-space: normal; word-break: break-word; }
+
+@media (max-width: 600px) {
+  .theme-grid { grid-template-columns: 1fr; }
+}
+
+.view-public-profile-btn { margin-top: 4px; }
+
+/* ---------- Buscador de perfiles (modal) ---------- */
+.profile-search-results {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 10px;
+  max-height: 340px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ---------- Avatares/apodos clicables (llevan al perfil público) ----------
+   Se usa en listas de chats/amigos/salas/solicitudes, resultados de
+   búsqueda y en el encabezado del chat activo. */
+.user-link { cursor: pointer; }
+.user-link.list-item-name:hover,
+.user-link.name:hover { text-decoration: underline; }
+.avatar-circle.user-link:hover { filter: brightness(1.06); }
+
+/* =======================================================================
+   PÁGINA DE PERFIL PÚBLICO (public/profile.html)
+   ======================================================================= */
+.pp-shell { min-height: 100vh; padding: 20px 0 40px; }
+.pp-wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+.pp-back-row { margin-bottom: 12px; }
+.pp-back-row a { color: #fff; text-decoration: none; font-size: 12px; }
+
+.pp-card {
+  background: #f3f5fb;
+  border: 1px solid #2657c4;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+.pp-banner {
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(to bottom, #5d96f0 0%, #2f63d6 50%, #1d4cc0 100%);
+  position: relative;
+  overflow: hidden;
+}
+.pp-banner .banner-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.pp-header {
+  padding: 0 24px 18px;
+  position: relative;
+}
+.pp-avatar {
+  width: 96px; height: 96px;
+  border-radius: 14px;
+  background: #fff;
+  border: 4px solid #f3f5fb;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  margin-top: -48px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 46px;
+  overflow: hidden;
+  position: relative;
+}
+.pp-avatar .avatar-img { width: 100%; height: 100%; object-fit: cover; }
+
+.pp-name-row { margin-top: 10px; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.pp-nickname { font-size: 20px; font-weight: bold; }
+.pp-status-msg { font-size: 12px; color: #667; font-style: italic; }
+.pp-member-since { font-size: 10.5px; color: #99a; margin-top: 2px; }
+
+.pp-bio {
+  margin-top: 14px;
+  background: #fff;
+  border: 1px solid #dbe3f4;
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.pp-section { padding: 18px 24px; border-top: 1px solid #dbe3f4; }
+.pp-section-title {
+  font-size: 11px;
+  font-weight: bold;
+  color: #5570b3;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 10px;
+}
+
+.pp-links-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.pp-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 16px;
+  background: linear-gradient(to bottom, #6fa0ff, #2f63d6);
+  color: #fff;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: bold;
+  border: 1px solid #1d4cc0;
+}
+.pp-link-btn:hover { background: linear-gradient(to bottom, #82adff, #3d6fe0); }
+
+.pp-videos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.video-embed-wrap { position: relative; width: 100%; padding-top: 56.25%; border-radius: 6px; overflow: hidden; border: 1px solid #9aa9c7; background: #000; }
+.video-embed-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+.pp-blog-cta { text-align: center; }
+
+.pp-empty-note { color: #99a; font-size: 12px; }
+
+/* ---- Widgets/módulos personalizables (estilo MySpace) ---- */
+.pp-widgets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pp-widget { border: 1px solid #dbe3f4; border-radius: 8px; overflow: hidden; }
+.pp-widget-title { padding: 6px 10px; font-size: 12px; font-weight: bold; background: rgba(0,0,0,0.06); }
+.pp-widget-frame { display: block; width: 100%; height: 140px; border: 0; background: transparent; }
+
+/* ---- Fondos de página con efectos (Neocities-style) ---- */
+.pp-bg-gradient { background: linear-gradient(135deg, #dfe9ff, #f7d9ff, #d9fff0) !important; background-size: 400% 400%; animation: pp-gradient-move 12s ease infinite; }
+.pp-bg-stars { background-image: radial-gradient(#fff 1px, transparent 1px), radial-gradient(#fff 1px, transparent 1px) !important; background-size: 60px 60px; background-position: 0 0, 30px 30px; }
+.pp-bg-stripes { background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.04) 0 10px, transparent 10px 20px) !important; }
+@keyframes pp-gradient-move { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+/* ---- Sombras personalizables ---- */
+.pp-shadow-none { box-shadow: none !important; }
+.pp-shadow-soft { box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+.pp-shadow-hard { box-shadow: 6px 6px 0 rgba(0,0,0,0.45); }
+.pp-shadow-glow { box-shadow: 0 0 24px 4px currentColor, 0 8px 24px rgba(0,0,0,0.3); }
+
+/* ---- Animaciones y efectos visuales ---- */
+.pp-anim-fadein { animation: pp-fadein 0.8s ease; }
+.pp-anim-pulse { animation: pp-pulse 2.4s ease-in-out infinite; }
+.pp-anim-sparkle { animation: pp-sparkle 1.6s linear infinite; }
+.pp-anim-rainbow { animation: pp-rainbow 4s linear infinite; }
+@keyframes pp-fadein { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pp-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.01); } }
+@keyframes pp-sparkle { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.25); } }
+@keyframes pp-rainbow { 0% { color: #ff5959; } 20% { color: #ffb347; } 40% { color: #ffe066; } 60% { color: #6fdc8c; } 80% { color: #6fa8ff; } 100% { color: #ff5959; } }
+
+@media (max-width: 600px) {
+  .pp-videos-grid { grid-template-columns: 1fr; }
+  .pp-widgets-grid { grid-template-columns: 1fr; }
+  .pp-section { padding: 14px 16px; }
+  .pp-header { padding: 0 16px 14px; }
+  .pp-banner { height: 130px; }
+}
+
+/* Botón de cerrar para los paneles cuando se muestran como overlay en móvil */
+.panel-close-btn {
+  display: none;
+  align-self: flex-end;
+  border: none;
+  background: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #556;
+  padding: 4px 8px;
+  margin-bottom: 4px;
+}
+
+/* Selector de intereses (chips) usado en registro, perfil y creación de foros */
+.tag-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+.tag-chip {
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid #9aa9c7;
+  background: #fff;
+  color: #333;
+  font-size: 11px;
+  cursor: pointer;
+  user-select: none;
+}
+.tag-chip:hover { border-color: #2f63d6; }
+.tag-chip.selected {
+  background: linear-gradient(to bottom, #6fa0ff, #2f63d6);
+  border-color: #1d4cc0;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* Mini-tags de solo lectura (mostrados en listas de salas/recomendaciones) */
+.mini-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; }
+.mini-tag {
+  background: #d6e0f5;
+  color: #2a3a66;
+  font-size: 9.5px;
+  font-weight: bold;
+  padding: 1px 6px;
+  border-radius: 8px;
+}
+
+/* Modal genérico (reportar mensaje, crear foro, editor de blog, personalización)
+   -----------------------------------------------------------------------
+   IMPORTANTE: el overlay permite scroll propio (overflow-y:auto) y el
+   modal-box es un contenedor flex en columna con una altura máxima ligada
+   al viewport. Así, si el contenido (formularios largos como el de
+   personalización de perfil) no entra en la pantalla, es el CUERPO del
+   modal (.auth-body) el que scrollea internamente -manteniendo la barra
+   de título y los botones de Guardar/Cancelar siempre alcanzables- en vez
+   de que el modal se recorte o quede más alto que la pantalla sin forma
+   de llegar a sus botones. */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100;
+  padding: 16px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.modal-box {
+  width: 360px;
+  max-width: 100%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
+}
+.modal-box .titlebar { flex-shrink: 0; }
+.modal-box .auth-body {
+  padding: 18px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+/* Editor del blog/página personal: modal más ancho con dos columnas
+   (código a la izquierda, vista previa en vivo a la derecha) */
+.modal-box.blog-modal-box { width: 720px; }
+.blog-editor-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.blog-editor-grid textarea {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  height: 110px;
+  resize: vertical;
+}
+.blog-preview-wrap {
+  display: flex;
+  flex-direction: column;
+}
+.blog-preview-frame {
+  flex: 1;
+  min-height: 260px;
+  border: 1px solid #9aa9c7;
+  border-radius: 4px;
+  background: #fff;
+}
+.blog-visibility-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+.blog-visibility-row label { margin: 0; }
+@media (max-width: 768px) {
+  .modal-box.blog-modal-box { width: 100%; }
+  .blog-editor-grid { grid-template-columns: 1fr; }
+}
+
+/* Scrollbars retro-ish */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #e7ecf7; }
+::-webkit-scrollbar-thumb { background: #aebde0; border-radius: 5px; }
+
+/* Admin panel */
+.admin-wrapper { padding: 20px; max-width: 1000px; margin: 0 auto; }
+.admin-table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.admin-table { width: 100%; border-collapse: collapse; background: #fff; font-size: 12px; }
+.admin-table th, .admin-table td { border: 1px solid #dbe3f4; padding: 8px; text-align: left; vertical-align: top; }
+.admin-table th { background: #eef2fb; }
+.tag { display:inline-block; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold; }
+.tag.pending { background:#fff3cd; color:#856404; }
+.tag.reviewed { background:#d4edda; color:#155724; }
+.tag.dismissed { background:#e2e3e5; color:#6c757d; }
+.row-actions { display:flex; gap:6px; flex-wrap: wrap; }
+.row-actions .btn { padding: 4px 8px; font-size: 11px; }
+
+.topbar-link { color: #fff; text-decoration: none; font-size: 12px; }
+
+/* Botón de ícono en la titlebar, visible en TODOS los tamaños de pantalla
+   (a diferencia de .mobile-profile-btn, que solo aparece en tablet/móvil
+   porque en desktop el panel de perfil ya está siempre visible). Se usa,
+   por ejemplo, para el buscador de perfiles. */
+.titlebar-icon-btn {
+  border: none;
+  background: none;
+  color: #fff;
+  font-size: 17px;
+  cursor: pointer;
+  padding: 4px 6px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.titlebar-icon-btn:hover { opacity: 0.8; }
+
+/* =======================================================================
+   NAVEGACIÓN POR VISTAS (necesaria para tablet chico y móvil)
+   -----------------------------------------------------------------------
+   En vez de ocultar/recortar columnas, en pantallas chicas cada columna
+   ocupa el 100% de la pantalla y se muestra UNA por vez. Se controla con
+   un atributo `data-view` en `.app-shell`, con 3 valores posibles:
+
+     data-view="list"    -> se ve el sidebar (lista de amigos/chats/salas)
+     data-view="chat"     -> se ve el chat-panel (conversación activa)
+     data-view="profile"  -> se ve el profile-panel
+
+   JS necesario (mínimo, sin frameworks):
+     - Al hacer click en un .list-item (abrir un chat):
+         appShell.setAttribute('data-view', 'chat')
+     - Al hacer click en el botón "atrás" del chat-header (.mobile-back-btn):
+         appShell.setAttribute('data-view', 'list')
+     - Al hacer click en el avatar/nombre propio o ícono de perfil:
+         appShell.setAttribute('data-view', 'profile')
+     - Al hacer click en el botón "atrás" del perfil (.mobile-back-btn):
+         appShell.setAttribute('data-view', 'list')  // o 'chat' si venías de ahí
+
+   Por defecto (sin JS o en desktop) data-view no importa: las 3 columnas
+   se ven siempre, como en el diseño original.
+   ======================================================================= */
+
+.mobile-back-btn {
+  display: none;
+  border: none;
+  background: none;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  color: #1d4cc0;
+  padding: 4px 6px 4px 0;
+  flex-shrink: 0;
+}
+
+/* El botón "atrás" dentro del panel de perfil va alineado a la izquierda,
+   ya que .profile-panel centra su contenido */
+.profile-panel .mobile-back-btn {
+  align-self: flex-start;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+/* Botón de acceso a perfil: vive en la titlebar y solo se muestra en
+   pantallas chicas (en desktop el perfil ya se ve siempre a la derecha) */
+.mobile-profile-btn {
+  display: none;
+  border: none;
+  background: none;
+  color: #fff;
+  font-size: 17px;
+  cursor: pointer;
+  padding: 4px 6px;
+  flex-shrink: 0;
+}
+
+/* Fondo oscuro detrás del panel de perfil cuando se muestra como overlay
+   deslizante (solo ocurre en el breakpoint de tablet, ver más abajo).
+   Se define oculto y fuera de flujo aquí para que, en desktop y en móvil
+   (donde .app-body es un contenedor flex normal), este elemento nunca
+   aparezca como un ítem flex fantasma que descuadre el layout de columnas. */
+.panel-backdrop {
+  display: none;
+  position: absolute;
+  inset: 0;
+}
+
+/* =======================================================================
+   RESPONSIVE — TABLET (601px a 1024px)
+   Entran 2 columnas completas (lista + chat). El perfil se abre como panel
+   deslizante que se ve completo, no recortado.
+   ======================================================================= */
+@media (max-width: 1024px) and (min-width: 601px) {
+  .sidebar { width: 210px; }
+
+  .profile-panel {
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 260px;
+    z-index: 20;
+    box-shadow: -4px 0 14px rgba(0,0,0,0.25);
+    transform: translateX(100%);
+    transition: transform 0.2s ease;
+  }
+  .app-shell[data-view="profile"] .profile-panel { transform: translateX(0); }
+
+  .mobile-profile-btn { display: inline-block; }
+  .profile-panel .mobile-back-btn { display: inline-block; }
+
+  .panel-backdrop {
+    background: rgba(0,0,0,0.35);
+    z-index: 15;
+  }
+  .app-shell[data-view="profile"] .panel-backdrop { display: block; }
+}
+
+/* =======================================================================
+   RESPONSIVE — MÓVIL Y TABLET CHICO (<= 600px)
+   Una sola columna a pantalla completa por vez, controlada con data-view.
+   Todo el contenido de esa columna se ve entero, sin cortar ni achicar
+   funcionalidad: es la vista completa de lista, chat o perfil.
+   ======================================================================= */
+@media (max-width: 600px) {
+  .app-body { position: relative; overflow: hidden; }
+
+  .sidebar,
+  .chat-panel,
+  .profile-panel {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    display: none;
+  }
+
+  /* Solo se muestra la columna que corresponde a la vista activa */
+  .app-shell[data-view="list"] .sidebar { display: flex; }
+  .app-shell[data-view="chat"] .chat-panel { display: flex; }
+  .app-shell[data-view="profile"] .profile-panel { display: flex; }
+
+  /* Si no hay data-view (antes de correr el JS), se ve la lista por defecto */
+  .app-shell:not([data-view]) .sidebar { display: flex; }
+  .app-shell:not([data-view]) .chat-panel { display: none; }
+  .app-shell:not([data-view]) .profile-panel { display: none; }
+
+  .mobile-back-btn { display: inline-block; }
+  .mobile-profile-btn { display: inline-block; }
+
+  /* La barra superior solo aparece en la vista de lista; en chat/perfil
+     desaparece para aprovechar toda la pantalla, como en apps de chat
+     nativas. El botón "atrás" de cada vista reemplaza su función. */
+  .app-shell[data-view="chat"] .titlebar,
+  .app-shell[data-view="profile"] .titlebar {
+    display: none;
+  }
+
+  .chat-header { padding: 8px 10px; gap: 6px; }
+  .chat-header .sub { display: none; }
+
+  .message-row { max-width: 90%; }
+
+  .composer textarea { font-size: 16px; } /* evita zoom automático de iOS */
+
+  .auth-card { width: 100%; }
+  .auth-body { padding: 20px 16px; }
+
+  .titlebar { padding: 8px 10px; }
+  .titlebar .dots span { width: 10px; height: 10px; }
+
+  .admin-wrapper { padding: 10px; }
+
+  /* El panel admin usa un margen fijo por inline style; en pantallas
+     chicas lo pegamos a los bordes para aprovechar todo el ancho/alto */
+  body > .win {
+    margin: 0 !important;
+    max-width: 100% !important;
+    border-radius: 0 !important;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+}
+
+/* =======================================================================
+   RESPONSIVE — MÓVIL PEQUEÑO (<= 400px)
+   Ajustes finos adicionales para pantallas muy angostas.
+   ======================================================================= */
+@media (max-width: 400px) {
+  .auth-body h2 { font-size: 16px; }
+  .btn { width: 100%; text-align: center; }
+  .form-actions { flex-direction: column; align-items: stretch; text-align: center; }
+  .avatar-grid { grid-template-columns: repeat(3, 1fr); }
+  .admin-table th, .admin-table td { padding: 6px; font-size: 11px; }
+}
+
+/* Áreas táctiles más grandes en pantallas sin cursor tipo mouse (cualquier ancho) */
+@media (hover: none) and (pointer: coarse) {
+  .btn, .status-toggle button, .avatar-option, .tag-chip, .sidebar-tabs button {
+    min-height: 38px;
+  }
+  .link-btn, .message-actions, .mobile-back-btn, .mobile-profile-btn {
+    padding: 8px 6px;
+  }
+  .list-item { padding: 10px; }
+}

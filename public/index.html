@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LBMessenger</title>
+<link rel="icon" type="image/png" href="https://www.0x08.org/images/msn_messenger.png" />
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<div class="auth-wrapper">
+  <div class="win auth-card">
+    <div class="titlebar">
+      <div class="logo">💬 LBMessenger</div>
+      <div class="dots"><span></span><span></span><span></span></div>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="loginScreen" class="auth-body">
+      <h2>Iniciar sesión</h2>
+      <p class="subtitle">Conéctate con tu correo institucional</p>
+      <form id="loginForm">
+        <label>Correo institucional</label>
+        <input type="email" id="loginEmail" placeholder="usuario@educacionvillarrica.cl" required />
+        <label>Contraseña</label>
+        <input type="password" id="loginPassword" required />
+        <div class="error-msg" id="loginError"></div>
+        <div class="notice-msg hidden" id="loginNotice">Por favor espera, este es un proyecto que usa plataformas gratuitas, asi que los tiempos de carga pueden durar un momento.</div>
+        <button type="submit" class="btn block" id="loginSubmitBtn">Conectarse</button>
+      </form>
+      <div class="form-actions">
+        <button class="link-btn" id="goRegister">Crear cuenta nueva</button>
+      </div>
+    </div>
+
+    <!-- REGISTRO -->
+    <div id="registerScreen" class="auth-body hidden">
+      <h2>Crear cuenta</h2>
+      <p class="subtitle">Solo correos @educacionvillarrica.cl</p>
+      <form id="registerForm">
+        <label>Correo institucional</label>
+        <input type="email" id="regEmail" placeholder="usuario@educacionvillarrica.cl" required />
+        <label>Apodo (nickname)</label>
+        <input type="text" id="regNickname" maxlength="20" placeholder="Tu nombre no será visible" required />
+        <label>Contraseña</label>
+        <input type="password" id="regPassword" minlength="6" required />
+        <label>Tus intereses (elige los que quieras)</label>
+        <div class="tag-picker" id="regInterests"></div>
+        <div class="error-msg" id="registerError"></div>
+        <div class="notice-msg hidden" id="registerNotice">Por favor espera, este es un proyecto que usa plataformas gratuitas, asi que los tiempos de carga pueden durar un momento.</div>
+        <button type="submit" class="btn block" id="registerSubmitBtn">Registrarme</button>
+      </form>
+      <div class="form-actions">
+        <button class="link-btn" id="goLogin">Ya tengo cuenta</button>
+      </div>
+    </div>
+
+    <!-- OTP -->
+    <div id="otpScreen" class="auth-body hidden">
+      <h2>Verifica tu correo</h2>
+      <p class="subtitle">Enviamos un código a <strong id="otpEmailLabel"></strong></p>
+      <form id="otpForm">
+        <label>Código de verificación</label>
+        <input type="text" id="otpCode" maxlength="6" placeholder="123456" required />
+        <div class="error-msg" id="otpError"></div>
+        <div class="success-msg" id="otpSuccess"></div>
+        <div class="notice-msg hidden" id="otpNotice">Por favor espera, este es un proyecto que usa plataformas gratuitas, asi que los tiempos de carga pueden durar un momento.</div>
+        <button type="submit" class="btn block" id="otpSubmitBtn">Verificar cuenta</button>
+      </form>
+      <div class="form-actions">
+        <button class="link-btn" id="resendOtp">Reenviar código</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/config.js"></script>
+<script src="/js/interests.js"></script>
+<script src="/js/auth.js"></script>
+</body>
+</html>

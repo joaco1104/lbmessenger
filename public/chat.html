@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LBMessenger</title>
+<link rel="icon" type="image/png" href="https://www.0x08.org/images/msn_messenger.png" />
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<div class="app-shell win" id="appShell" style="border-radius:0;">
+  <div class="titlebar">
+    <div class="logo">💬 LBMessenger</div>
+    <div class="titlebar-actions">
+      <a href="/admin.html" class="topbar-link hidden" id="adminLink">Panel Admin</a>
+      <button type="button" class="titlebar-icon-btn" id="profileSearchBtn" title="Buscar perfiles">🔍</button>
+      <button type="button" class="mobile-profile-btn" id="mobileProfileBtn" title="Mi perfil">👤</button>
+    </div>
+  </div>
+
+  <div class="app-body">
+    <!-- Fondo oscuro detrás del panel de perfil cuando se desliza como overlay
+         en tablet (601-1024px). Tocarlo cierra el panel, igual que el botón
+         "Volver" dentro del panel. Ver reglas en style.css (.panel-backdrop). -->
+    <div class="panel-backdrop" id="panelBackdrop"></div>
+
+    <!-- IZQUIERDA: amigos / chats / salas -->
+    <div class="sidebar">
+      <div class="sidebar-tabs">
+        <button class="active" data-tab="chats">Chats</button>
+        <button data-tab="friends">Amigos</button>
+        <button data-tab="rooms">Salas</button>
+        <button data-tab="requests">Solicitudes <span class="badge hidden" id="reqBadge">0</span></button>
+      </div>
+
+      <div class="search-box hidden" id="friendSearchBox">
+        <input type="text" id="friendSearchInput" placeholder="Buscar por apodo..." />
+      </div>
+
+      <div class="search-box hidden" id="createRoomBox">
+        <button class="btn block" id="createRoomBtn">+ Crear nuevo foro</button>
+      </div>
+
+      <div class="list-panel" id="listPanel">
+        <!-- contenido dinámico según pestaña -->
+      </div>
+    </div>
+
+    <!-- CENTRO: chat activo -->
+    <div class="chat-panel" id="chatPanel">
+      <div class="empty-chat-placeholder" id="emptyPlaceholder">
+        <div class="big-icon">💬</div>
+        <div>Selecciona un chat, sala o amigo para comenzar</div>
+      </div>
+
+      <div id="activeChatView" class="hidden" style="display:flex; flex-direction:column; height:100%;">
+        <div class="chat-header">
+          <button type="button" class="mobile-back-btn" id="chatBackBtn" title="Volver">←</button>
+          <div class="avatar-circle" id="chatHeaderAvatar">🙂</div>
+          <div class="chat-header-info">
+            <div class="name" id="chatHeaderName">—</div>
+            <div class="sub" id="chatHeaderSub">—</div>
+          </div>
+          <div class="chat-header-actions">
+            <button type="button" class="btn secondary hidden" id="viewProfileBtn" style="padding:5px 8px;font-size:11px;" title="Ver su perfil">👤 Perfil</button>
+            <button type="button" class="btn secondary hidden" id="viewBlogBtn" style="padding:5px 8px;font-size:11px;" title="Ver su página personal">🌐 Página</button>
+          </div>
+        </div>
+        <div class="messages-area" id="messagesArea"></div>
+        <div class="typing-indicator" id="typingIndicator"></div>
+        <div class="composer">
+          <div class="emoticon-picker hidden" id="emoticonPicker"></div>
+          <button type="button" class="composer-extra-btn" id="emoticonBtn" title="Emoticonos">😊</button>
+          <button type="button" class="composer-extra-btn" id="nudgeBtn" title="Enviar zumbido">⚡</button>
+          <textarea id="messageInput" placeholder="Escribe un mensaje... (prueba :) o (heart))" maxlength="1000"></textarea>
+          <button class="btn" id="sendBtn">Enviar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DERECHA: perfil -->
+    <div class="profile-panel">
+      <button type="button" class="mobile-back-btn" id="profileBackBtn" title="Volver">← Volver</button>
+
+      <!-- Banner del perfil -->
+      <div class="profile-banner-preview" id="profileBannerPreview">
+        <span class="banner-empty-hint">Sin banner</span>
+      </div>
+      <input type="file" id="bannerFileInput" accept="image/jpeg,image/gif" class="hidden" />
+      <div class="image-upload-row">
+        <button type="button" class="btn secondary" id="uploadBannerBtn">🖼️ Subir banner</button>
+        <button type="button" class="btn danger hidden" id="removeBannerBtn">Quitar</button>
+      </div>
+      <div class="error-msg" id="bannerError" style="text-align:center;"></div>
+
+      <div class="profile-avatar" id="profileAvatar">🙂</div>
+
+      <input type="file" id="photoFileInput" accept="image/jpeg,image/gif" class="hidden" />
+      <div class="photo-upload-actions">
+        <button type="button" class="btn secondary" id="uploadPhotoBtn">📷 Subir foto</button>
+        <button type="button" class="btn danger hidden" id="removePhotoBtn">Quitar</button>
+      </div>
+      <div class="photo-upload-hint">JPEG o GIF, máx. ~2MB</div>
+      <div class="error-msg" id="photoError" style="text-align:center;"></div>
+
+      <div class="profile-nickname" id="profileNickname">—</div>
+      <input type="text" id="statusMessageInput" class="status-message-input" maxlength="100" placeholder="Escribe un mensaje personal..." />
+      <div class="profile-email" id="profileEmail">—</div>
+
+      <div class="profile-section">
+        <label>Estado</label>
+        <div class="status-toggle">
+          <button id="statusOnlineBtn" class="active">🟢 En línea</button>
+          <button id="statusAwayBtn">🌙 Ausente</button>
+        </div>
+      </div>
+
+      <div class="profile-section">
+        <label>Color de apodo</label>
+        <input type="color" id="colorPicker" value="#0066cc" style="width:100%; height:30px; padding:2px;" />
+      </div>
+
+      <div class="profile-section">
+        <label>Avatar</label>
+        <div class="avatar-grid" id="avatarGrid"></div>
+      </div>
+
+      <div class="profile-section">
+        <label>Biografía</label>
+        <textarea id="bioInput" class="bio-textarea" maxlength="500" placeholder="Cuéntale a los demás algo sobre ti..."></textarea>
+      </div>
+
+      <div class="profile-section">
+        <label>Fondo personalizado de mi perfil</label>
+        <input type="file" id="backgroundFileInput" accept="image/jpeg,image/gif" class="hidden" />
+        <div class="image-upload-row">
+          <button type="button" class="btn secondary" id="uploadBackgroundBtn">🎨 Subir fondo</button>
+          <button type="button" class="btn danger hidden" id="removeBackgroundBtn">Quitar</button>
+        </div>
+        <div class="image-upload-hint">Imagen o GIF, máx. ~2MB. Se ve en tu perfil público.</div>
+        <div class="error-msg" id="backgroundError"></div>
+      </div>
+
+      <div class="profile-section">
+        <label>Links personalizados</label>
+        <div class="profile-links-list" id="profileLinksList"></div>
+        <div class="mini-add-form" id="linkAddForm">
+          <input type="text" id="newLinkLabel" maxlength="30" placeholder="Nombre (ej: Instagram)" />
+          <input type="text" id="newLinkUrl" maxlength="300" placeholder="https://..." />
+          <button type="button" class="btn secondary" id="addLinkBtn">+ Agregar link</button>
+        </div>
+        <div class="mini-form-error" id="linkError"></div>
+      </div>
+
+      <div class="profile-section">
+        <label>Videos de YouTube</label>
+        <div class="profile-videos-list" id="profileVideosList"></div>
+        <div class="mini-add-form" id="videoAddForm">
+          <input type="text" id="newVideoUrl" maxlength="300" placeholder="Pega el enlace de YouTube..." />
+          <button type="button" class="btn secondary" id="addVideoBtn">+ Agregar video</button>
+        </div>
+        <div class="mini-form-error" id="videoError"></div>
+      </div>
+
+      <div class="profile-section">
+        <label>Mi página personal</label>
+        <button type="button" class="btn block" id="editBlogBtn" style="margin-top:4px;">🌐 Editar mi página</button>
+      </div>
+
+      <div class="profile-section">
+        <label>Personalizar mi perfil</label>
+        <button type="button" class="btn block" id="editThemeBtn" style="margin-top:4px;">🎨 Colores, bordes, widgets y más</button>
+      </div>
+
+      <div class="profile-section">
+        <label>Mis intereses</label>
+        <div class="tag-picker" id="profileInterests"></div>
+      </div>
+
+      <button type="button" class="btn secondary view-public-profile-btn" id="viewMyProfileBtn" style="width:100%;">👤 Ver mi perfil público</button>
+
+      <button class="btn danger logout-btn" id="logoutBtn">Cerrar sesión</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: buscador de perfiles -->
+<div class="modal-overlay hidden" id="profileSearchModal">
+  <div class="win modal-box">
+    <div class="titlebar"><div class="logo">🔍 Buscar perfiles</div></div>
+    <div class="auth-body">
+      <p class="subtitle">Busca a cualquier persona por su apodo y entra a su perfil.</p>
+      <label>Apodo</label>
+      <input type="text" id="profileSearchInput" placeholder="Escribe un apodo..." autocomplete="off" />
+      <div class="profile-search-results" id="profileSearchResults"></div>
+      <div class="form-actions">
+        <button class="btn secondary" id="closeProfileSearchBtn">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: editor de la página personal (estilo Neocities) -->
+<div class="modal-overlay hidden" id="blogModal">
+  <div class="win modal-box blog-modal-box">
+    <div class="titlebar"><div class="logo">🌐 Mi página personal</div></div>
+    <div class="auth-body">
+      <p class="subtitle">Escribe tu propio HTML y CSS. Por seguridad, tu página se muestra siempre sin JavaScript (no se ejecuta ningún script), pero puedes personalizar todo el diseño y contenido.</p>
+      <label>Título de la página</label>
+      <input type="text" id="blogTitleInput" maxlength="60" placeholder="La página de..." />
+      <div class="blog-editor-grid" style="margin-top:10px;">
+        <div>
+          <label>HTML</label>
+          <textarea id="blogHtmlInput" placeholder="<h1>Hola!</h1>&#10;<p>Bienvenido a mi página.</p>"></textarea>
+          <label style="margin-top:8px;">CSS</label>
+          <textarea id="blogCssInput" placeholder="body { color: hotpink; }"></textarea>
+        </div>
+        <div class="blog-preview-wrap">
+          <label>Vista previa</label>
+          <iframe id="blogPreviewFrame" class="blog-preview-frame" sandbox=""></iframe>
+        </div>
+      </div>
+      <div class="blog-visibility-row">
+        <input type="checkbox" id="blogPublicCheckbox" />
+        <label style="margin:0;">Hacer pública mi página (otros usuarios de LBMessenger podrán verla)</label>
+      </div>
+      <div class="error-msg" id="blogError"></div>
+      <div class="form-actions">
+        <button class="btn secondary" id="cancelBlogBtn">Cancelar</button>
+        <button class="btn" id="saveBlogBtn">Guardar página</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: personalización total del perfil (estilo Neocities/MySpace) -->
+<div class="modal-overlay hidden" id="themeModal">
+  <div class="win modal-box blog-modal-box">
+    <div class="titlebar"><div class="logo">🎨 Personalizar mi perfil</div></div>
+    <div class="auth-body">
+      <p class="subtitle">Elige colores, tipografía, bordes, transparencia, sombras, efectos y animaciones para que tu perfil público sea único. También puedes agregar widgets propios y reordenar las secciones.</p>
+
+      <div class="theme-grid">
+        <div class="profile-section">
+          <label>Fondo de la página</label>
+          <input type="color" id="themeBgColor" value="#e8eef7" />
+        </div>
+        <div class="profile-section">
+          <label>Fondo de la tarjeta</label>
+          <input type="color" id="themeCardBgColor" value="#ffffff" />
+        </div>
+        <div class="profile-section">
+          <label>Color de texto</label>
+          <input type="color" id="themeTextColor" value="#222222" />
+        </div>
+        <div class="profile-section">
+          <label>Color de links</label>
+          <input type="color" id="themeLinkColor" value="#1d4cc0" />
+        </div>
+        <div class="profile-section">
+          <label>Color de borde</label>
+          <input type="color" id="themeBorderColor" value="#c7d3e8" />
+        </div>
+        <div class="profile-section">
+          <label>Tipografía</label>
+          <select id="themeFontFamily">
+            <option value="system">Predeterminada</option>
+            <option value="serif">Elegante (serif)</option>
+            <option value="mono">Monoespaciada</option>
+            <option value="comic">Divertida (Comic Sans)</option>
+            <option value="fantasy">Fantasía</option>
+            <option value="cursive">Cursiva</option>
+          </select>
+        </div>
+        <div class="profile-section">
+          <label>Estilo de borde</label>
+          <select id="themeBorderStyle">
+            <option value="solid">Sólido</option>
+            <option value="dashed">Rayado</option>
+            <option value="dotted">Punteado</option>
+            <option value="double">Doble</option>
+            <option value="groove">Relieve</option>
+            <option value="none">Sin borde</option>
+          </select>
+        </div>
+        <div class="profile-section">
+          <label>Grosor del borde (<span id="themeBorderWidthVal">1</span>px)</label>
+          <input type="range" id="themeBorderWidth" min="0" max="12" value="1" />
+        </div>
+        <div class="profile-section">
+          <label>Bordes redondeados (<span id="themeBorderRadiusVal">10</span>px)</label>
+          <input type="range" id="themeBorderRadius" min="0" max="40" value="10" />
+        </div>
+        <div class="profile-section">
+          <label>Transparencia de la tarjeta (<span id="themeOpacityVal">100</span>%)</label>
+          <input type="range" id="themeCardOpacity" min="30" max="100" value="100" />
+        </div>
+        <div class="profile-section">
+          <label>Sombra</label>
+          <select id="themeBoxShadow">
+            <option value="soft">Suave</option>
+            <option value="hard">Dura</option>
+            <option value="glow">Resplandor</option>
+            <option value="none">Sin sombra</option>
+          </select>
+        </div>
+        <div class="profile-section">
+          <label>Efecto de fondo</label>
+          <select id="themeBackgroundEffect">
+            <option value="none">Ninguno</option>
+            <option value="gradient">Degradado animado</option>
+            <option value="stars">Puntos/estrellas</option>
+            <option value="stripes">Rayas diagonales</option>
+          </select>
+        </div>
+        <div class="profile-section">
+          <label>Animación</label>
+          <select id="themeAnimation">
+            <option value="none">Ninguna</option>
+            <option value="fadein">Aparecer suave</option>
+            <option value="pulse">Pulso</option>
+            <option value="sparkle">Brillo</option>
+            <option value="rainbow">Nombre arcoíris</option>
+          </select>
+        </div>
+      </div>
+      <div class="error-msg" id="themeError"></div>
+
+      <div class="profile-section">
+        <label>Orden de las secciones de mi perfil</label>
+        <div class="layout-order-list" id="layoutOrderList"></div>
+      </div>
+
+      <div class="profile-section">
+        <label>Mis widgets/módulos</label>
+        <div class="profile-links-list" id="widgetsList"></div>
+        <div class="mini-add-form" id="widgetAddForm">
+          <input type="text" id="newWidgetIcon" maxlength="4" placeholder="Emoji (ej: 🎮)" style="max-width:70px;" />
+          <input type="text" id="newWidgetTitle" maxlength="40" placeholder="Título del widget" />
+          <input type="color" id="newWidgetColor" value="#ffffff" />
+          <textarea id="newWidgetContent" maxlength="4000" placeholder="Contenido en HTML (se muestra sin JavaScript, igual que tu página personal)" style="min-height:70px;"></textarea>
+          <button type="button" class="btn secondary" id="addWidgetBtn">+ Agregar widget</button>
+        </div>
+        <div class="mini-form-error" id="widgetError"></div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn secondary" id="cancelThemeBtn">Cancelar</button>
+        <button class="btn" id="saveThemeBtn">Guardar personalización</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: reportar mensaje -->
+<div class="modal-overlay hidden" id="reportModal">
+  <div class="win modal-box">
+    <div class="titlebar"><div class="logo">🚩 Reportar mensaje</div></div>
+    <div class="auth-body">
+      <label>Motivo del reporte</label>
+      <textarea id="reportReason" rows="4" maxlength="500" placeholder="Explica por qué reportas este mensaje..."></textarea>
+      <div class="error-msg" id="reportError"></div>
+      <div class="form-actions">
+        <button class="btn secondary" id="cancelReportBtn">Cancelar</button>
+        <button class="btn danger" id="submitReportBtn">Enviar reporte</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: crear foro -->
+<div class="modal-overlay hidden" id="createRoomModal">
+  <div class="win modal-box">
+    <div class="titlebar"><div class="logo">➕ Crear foro</div></div>
+    <div class="auth-body">
+      <label>Nombre del foro</label>
+      <input type="text" id="newRoomName" maxlength="40" placeholder="Ej: Amantes del anime" />
+      <label>Descripción</label>
+      <textarea id="newRoomDescription" rows="3" maxlength="200" placeholder="¿De qué se trata este foro?"></textarea>
+      <label>Emoji representativo</label>
+      <input type="text" id="newRoomIcon" maxlength="4" placeholder="🎮" />
+      <label>Tags relacionados</label>
+      <div class="tag-picker" id="newRoomTags"></div>
+      <div class="error-msg" id="createRoomError"></div>
+      <div class="form-actions">
+        <button class="btn secondary" id="cancelCreateRoomBtn">Cancelar</button>
+        <button class="btn" id="submitCreateRoomBtn">Crear foro</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.socket.io/4.8.3/socket.io.min.js"></script>
+<script src="/js/config.js"></script>
+<script src="/js/avatars.js"></script>
+<script src="/js/interests.js"></script>
+<script src="/js/emoticons.js"></script>
+<script src="/js/youtube.js"></script>
+<script src="/js/chat.js"></script>
+</body>
+</html>

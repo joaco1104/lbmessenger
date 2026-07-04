@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Página personal - LBMessenger</title>
+<link rel="icon" type="image/png" href="https://www.0x08.org/images/msn_messenger.png" />
+<link rel="stylesheet" href="/css/style.css" />
+<style>
+  .blog-page-wrap {
+    max-width: 900px;
+    margin: 24px auto;
+    padding: 0 16px;
+  }
+  .blog-page-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .blog-page-frame {
+    width: 100%;
+    min-height: 70vh;
+    border: 1px solid #b9c4e0;
+    border-radius: 6px;
+    background: #fff;
+  }
+  .blog-page-back {
+    color: #fff;
+    text-decoration: none;
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+<div class="win" style="border-radius:0; min-height:100vh;">
+  <div class="titlebar">
+    <div class="logo">🌐 Página personal</div>
+    <a href="/chat.html" class="blog-page-back">← Volver a LBMessenger</a>
+  </div>
+  <div class="blog-page-wrap">
+    <div class="blog-page-header">
+      <div class="avatar-circle" id="blogAvatar" style="width:44px;height:44px;font-size:24px;">🙂</div>
+      <div>
+        <div style="font-weight:bold; font-size:16px;" id="blogPageTitle">Cargando...</div>
+        <div style="font-size:11px; color:#667;" id="blogPageOwner"></div>
+      </div>
+    </div>
+    <div id="blogStateMsg" class="system-msg hidden"></div>
+    <iframe id="blogPageFrame" class="blog-page-frame hidden" sandbox=""></iframe>
+  </div>
+</div>
+
+<script src="/js/config.js"></script>
+<script>
+  const token = localStorage.getItem('lbm_token');
+  if (!token) {
+    window.location.href = '/index.html';
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const nickname = params.get('u');
+
+  async function loadBlog() {
+    const stateEl = document.getElementById('blogStateMsg');
+    const frame = document.getElementById('blogPageFrame');
+
+    if (!nickname) {
+      stateEl.textContent = 'Falta indicar de quién es la página (falta "?u=apodo" en la URL).';
+      stateEl.classList.remove('hidden');
+      return;
+    }
+
+    try {
+      const res = await fetch(`${window.LBM_API_BASE || ''}/api/blog/${encodeURIComponent(nickname)}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        stateEl.textContent = data.error || 'Esta página no existe o no es pública.';
+        stateEl.classList.remove('hidden');
+        return;
+      }
+
+      document.title = `${data.title || data.nickname} - LBMessenger`;
+      document.getElementById('blogPageTitle').textContent = data.title || `Página de ${data.nickname}`;
+      document.getElementById('blogPageOwner').textContent = `por ${data.nickname}`;
+
+      // Igual que en el editor: sandbox="" impide que se ejecute cualquier
+      // JavaScript dentro de la página, sin importar lo que haya escrito
+      // el autor. Es solo HTML + CSS.
+      frame.srcdoc = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${data.css || ''}</style></head><body>${data.html || ''}</body></html>`;
+      frame.classList.remove('hidden');
+    } catch (err) {
+      stateEl.textContent = 'No se pudo cargar la página.';
+      stateEl.classList.remove('hidden');
+    }
+  }
+
+  loadBlog();
+</script>
+</body>
+</html>

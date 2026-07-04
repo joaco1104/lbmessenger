@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Perfil - LBMessenger</title>
+<link rel="icon" type="image/png" href="https://www.0x08.org/images/msn_messenger.png" />
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<div class="pp-shell" id="ppShell">
+  <div class="pp-wrap">
+    <div class="pp-back-row">
+      <a href="/chat.html">← Volver a LBMessenger</a>
+    </div>
+
+    <div id="ppStateMsg" class="system-msg hidden" style="color:#fff;"></div>
+
+    <div class="win pp-card hidden" id="ppCard">
+      <div class="pp-banner" id="ppBanner"></div>
+      <div class="pp-header">
+        <div class="pp-avatar" id="ppAvatar">🙂</div>
+        <div class="pp-name-row">
+          <div class="pp-nickname" id="ppNickname">—</div>
+        </div>
+        <div class="pp-status-msg" id="ppStatusMsg"></div>
+        <div class="pp-member-since" id="ppMemberSince"></div>
+      </div>
+
+      <div class="pp-bio hidden" id="ppBioWrap" data-section="bio">
+        <div id="ppBio"></div>
+      </div>
+
+      <div id="ppSections"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Plantillas de secciones reorganizables (se clonan dentro de #ppSections según el orden guardado por el usuario) -->
+<template id="tplLinksSection">
+  <div class="pp-section hidden" id="ppLinksSection" data-section="links">
+    <div class="pp-section-title">Links</div>
+    <div class="pp-links-row" id="ppLinksRow"></div>
+  </div>
+</template>
+<template id="tplVideosSection">
+  <div class="pp-section hidden" id="ppVideosSection" data-section="videos">
+    <div class="pp-section-title">Videos</div>
+    <div class="pp-videos-grid" id="ppVideosGrid"></div>
+  </div>
+</template>
+<template id="tplWidgetsSection">
+  <div class="pp-section hidden" id="ppWidgetsSection" data-section="widgets">
+    <div class="pp-section-title">Mis módulos</div>
+    <div class="pp-widgets-grid" id="ppWidgetsGrid"></div>
+  </div>
+</template>
+<template id="tplBlogSection">
+  <div class="pp-section pp-blog-cta hidden" id="ppBlogSection" data-section="blog">
+    <button type="button" class="btn" id="ppBlogBtn">🌐 Ver página personal</button>
+  </div>
+</template>
+
+<script src="/js/config.js"></script>
+<script src="/js/avatars.js"></script>
+<script src="/js/youtube.js"></script>
+<script>
+  const token = localStorage.getItem('lbm_token');
+  if (!token) {
+    window.location.href = '/index.html';
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const nickname = params.get('u');
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str ?? '';
+    return div.innerHTML;
+  }
+
+  async function loadProfile() {
+    const stateEl = document.getElementById('ppStateMsg');
+    const card = document.getElementById('ppCard');
+
+    if (!nickname) {
+      stateEl.textContent = 'Falta indicar de quién es el perfil (falta "?u=apodo" en la URL).';
+      stateEl.classList.remove('hidden');
+      return;
+    }
+
+    try {
+      const res = await fetch(`${window.LBM_API_BASE || ''}/api/users/${encodeURIComponent(nickname)}/profile`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        stateEl.textContent = data.error || 'Este perfil no existe.';
+        stateEl.classList.remove('hidden');
+        return;
+      }
+
+      renderProfile(data.profile);
+      card.classList.remove('hidden');
+    } catch (err) {
+      stateEl.textContent = 'No se pudo cargar el perfil.';
+      stateEl.classList.remove('hidden');
+    }
+  }
+
+  // Convierte un color hex (#rrggbb) + una opacidad (0-1) en un rgba() válido.
+  function hexToRgba(hex, alpha) {
+    const m = /^#([0-9a-f]{6})$/i.exec(hex || '');
+    if (!m) return hex;
+    const n = parseInt(m[1], 16);
+    return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
+  }
+
+  const FONT_STACKS = {
+    system: '',
+    serif: 'Georgia, "Times New Roman", serif',
+    mono: '"Courier New", monospace',
+    comic: '"Comic Sans MS", "Comic Sans", cursive',
+    fantasy: 'fantasy, cursive',
+    cursive: 'cursive'
+  };
+
+  // Aplica todas las opciones de personalización (colores, tipografía,
+  // bordes, transparencia, sombra, fondo animado y animaciones) al perfil.
+  function applyTheme(p) {
+    const t = Object.assign({
+      bgColor: '#e8eef7', cardBgColor: '#ffffff', textColor: '#222222', linkColor: '#1d4cc0',
+      borderColor: '#c7d3e8', fontFamily: 'system', borderStyle: 'solid', borderWidth: 1,
+      borderRadius: 10, cardOpacity: 1, boxShadow: 'soft', backgroundEffect: 'none', animation: 'none'
+    }, p.theme || {});
+
+    const shell = document.getElementById('ppShell');
+    const card = document.getElementById('ppCard');
+
+    shell.classList.remove('pp-bg-gradient', 'pp-bg-stars', 'pp-bg-stripes');
+    // El fondo con imagen/GIF subido tiene prioridad sobre los efectos de fondo generados por CSS.
+    if (!p.profileBackground) {
+      shell.style.background = t.bgColor;
+      if (t.backgroundEffect !== 'none') shell.classList.add(`pp-bg-${t.backgroundEffect}`);
+    }
+
+    card.style.background = hexToRgba(t.cardBgColor, t.cardOpacity);
+    card.style.color = t.textColor;
+    card.style.borderColor = t.borderColor;
+    card.style.borderWidth = `${t.borderWidth}px`;
+    card.style.borderStyle = t.borderStyle;
+    card.style.borderRadius = `${t.borderRadius}px`;
+    if (FONT_STACKS[t.fontFamily]) card.style.fontFamily = FONT_STACKS[t.fontFamily];
+
+    card.classList.remove('pp-shadow-none', 'pp-shadow-soft', 'pp-shadow-hard', 'pp-shadow-glow');
+    card.classList.add(`pp-shadow-${t.boxShadow}`);
+
+    card.classList.remove('pp-anim-fadein', 'pp-anim-pulse', 'pp-anim-sparkle');
+    document.getElementById('ppNickname').classList.remove('pp-anim-rainbow');
+    if (t.animation === 'rainbow') {
+      document.getElementById('ppNickname').classList.add('pp-anim-rainbow');
+    } else if (t.animation !== 'none') {
+      card.classList.add(`pp-anim-${t.animation}`);
+    }
+
+    document.querySelectorAll('.pp-link-btn, .pp-section a').forEach((a) => { a.style.color = t.linkColor; });
+  }
+
+  function widgetHtml(w) {
+    const srcdoc = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{margin:0;padding:8px;font:12px/1.5 inherit;font-family:sans-serif;color:#222;overflow:auto;}</style></head><body>${w.content || ''}</body></html>`;
+    return `<div class="pp-widget" style="background:${escapeHtml(w.color || '#ffffff')}">
+      <div class="pp-widget-title">${escapeHtml(w.icon || '📌')} ${escapeHtml(w.title || '')}</div>
+      <iframe class="pp-widget-frame" sandbox="" srcdoc="${escapeHtml(srcdoc)}"></iframe>
+    </div>`;
+  }
+
+  // Construye las secciones reorganizables (links, videos, widgets, blog) en
+  // el orden que el usuario haya elegido guardar en `layout`.
+  function buildSections(p) {
+    const container = document.getElementById('ppSections');
+    container.innerHTML = '';
+    const order = Array.isArray(p.layout) && p.layout.length ? p.layout : ['links', 'videos', 'widgets', 'blog'];
+    const templates = { links: 'tplLinksSection', videos: 'tplVideosSection', widgets: 'tplWidgetsSection', blog: 'tplBlogSection' };
+
+    order.forEach((key) => {
+      if (key === 'bio') return; // la bio queda fija arriba, fuera de #ppSections
+      const tplId = templates[key];
+      if (!tplId) return;
+      const node = document.getElementById(tplId).content.cloneNode(true);
+      container.appendChild(node);
+    });
+  }
+
+  function renderProfile(p) {
+    document.title = `${p.nickname} - LBMessenger`;
+    buildSections(p);
+    applyTheme(p);
+
+    // Fondo personalizado: si el usuario subió uno, se aplica de fondo a
+    // toda la página (imagen o GIF). Si no, se mantiene el fondo por defecto.
+    if (p.profileBackground) {
+      document.getElementById('ppShell').style.backgroundImage = `url('${p.profileBackground}')`;
+      document.getElementById('ppShell').style.backgroundSize = 'cover';
+      document.getElementById('ppShell').style.backgroundPosition = 'center';
+      document.getElementById('ppShell').style.backgroundAttachment = 'fixed';
+    }
+
+    const bannerEl = document.getElementById('ppBanner');
+    const banner = bannerHtml(p);
+    if (banner) bannerEl.innerHTML = banner;
+
+    document.getElementById('ppAvatar').innerHTML = avatarHtml(p);
+    document.getElementById('ppNickname').textContent = p.nickname;
+    document.getElementById('ppNickname').style.color = p.nameColor || '#1d4cc0';
+
+    if (p.statusMessage) {
+      document.getElementById('ppStatusMsg').textContent = p.statusMessage;
+    }
+
+    if (p.memberSince) {
+      const date = new Date(p.memberSince).toLocaleDateString('es-CL', { year: 'numeric', month: 'long' });
+      document.getElementById('ppMemberSince').textContent = `Miembro desde ${date}`;
+    }
+
+    if (p.bio) {
+      document.getElementById('ppBio').textContent = p.bio;
+      document.getElementById('ppBioWrap').classList.remove('hidden');
+    }
+
+    if (p.links && p.links.length > 0) {
+      const row = document.getElementById('ppLinksRow');
+      row.innerHTML = p.links.map((link) =>
+        `<a class="pp-link-btn" href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer nofollow">🔗 ${escapeHtml(link.label)}</a>`
+      ).join('');
+      document.getElementById('ppLinksSection').classList.remove('hidden');
+    }
+
+    if (p.videos && p.videos.length > 0) {
+      const grid = document.getElementById('ppVideosGrid');
+      grid.innerHTML = p.videos.map((v) => youtubeEmbedHtml(v.videoId)).join('');
+      document.getElementById('ppVideosSection').classList.remove('hidden');
+    }
+
+    if (p.widgets && p.widgets.length > 0) {
+      const grid = document.getElementById('ppWidgetsGrid');
+      grid.innerHTML = p.widgets.map(widgetHtml).join('');
+      document.getElementById('ppWidgetsSection').classList.remove('hidden');
+    }
+
+    if (p.blogIsPublic) {
+      document.getElementById('ppBlogSection').classList.remove('hidden');
+      document.getElementById('ppBlogBtn').onclick = () => {
+        window.open(`/blog.html?u=${encodeURIComponent(p.nickname)}`, '_blank');
+      };
+    }
+
+    applyTheme(p);
+  }
+
+  loadProfile();
+</script>
+</body>
+</html>
